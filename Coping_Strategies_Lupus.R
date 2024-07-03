@@ -191,16 +191,23 @@ RESI_factors <-RESI_M %>% select(factunofcmsumatotal:factcincoestructsumtotal)
                       limits = c(0, 20)) +    # Ajustar los límites del eje Y   
    coord_flip()
          
- ### Multiple Radar Chart 
+ ### Multiple Radar Chart por grupos de edades ####
  
  
    #Renombrar cada factor de RESI_M
- colnames(RESI_M)[colnames(RESI_M) == "factunofcmsumatotal"] <- "Fort_Conf_SiMismo"
- colnames(RESI_M)[colnames(RESI_M) == "factdoscompsumatotal"] <- "Comp_Relacionarse"
- colnames(RESI_M)[colnames(RESI_M) == "factresapoyofamsumatotal"] <- "Apoyo_Familiar"
- colnames(RESI_M)[colnames(RESI_M) == "factcuatroapoyosocsumt"] <- "Apoyo_Social"
- colnames(RESI_M)[colnames(RESI_M) == "factcincoestructsumtotal"] <- "Cap_Organizacion"
+ colnames(RESI_M)[colnames(RESI_M) == "Fort_Conf_SiMismo"] <- "factunofcmsumatotal"
+ colnames(RESI_M)[colnames(RESI_M) == "Fort_Conf_SiMismo"] <- "factdoscompsumatotal"
+ colnames(RESI_M)[colnames(RESI_M) == "Apoyo_Familiar"] <- "factresapoyofamsumatotal"
+ colnames(RESI_M)[colnames(RESI_M) == "Apoyo_Social"] <- "factcuatroapoyosocsumt"
+ colnames(RESI_M)[colnames(RESI_M) == "Cap_Organizacion"] <- "factcincoestructsumtotal"
+ 
+ 
+ #Convertir a factor la columna age_group    
+ RESI_M$age_group <- factor(RESI_M$age_group)
 
+ 
+
+ 
  
  
 #guardar mis variables
