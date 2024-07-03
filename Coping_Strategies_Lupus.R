@@ -20,7 +20,7 @@ CSI_Res_base <- read.csv("data/Base_CSI_Res.csv")
 #install.packages("ggplot2")
 #installed.packages("tidyverse")
 #install.packages("patchwork")
-install.packages("fmsb")
+#install.packages("fmsb")
 
 # cargar paquetes 
 library(ggplot2)
@@ -191,7 +191,16 @@ RESI_factors <-RESI_M %>% select(factunofcmsumatotal:factcincoestructsumtotal)
                       limits = c(0, 20)) +    # Ajustar los límites del eje Y   
    coord_flip()
          
+ ### Multiple Radar Chart 
  
+ 
+   #Renombrar cada factor de RESI_M
+ colnames(RESI_M)[colnames(RESI_M) == "factunofcmsumatotal"] <- "Fort_Conf_SiMismo"
+ colnames(RESI_M)[colnames(RESI_M) == "factdoscompsumatotal"] <- "Comp_Relacionarse"
+ colnames(RESI_M)[colnames(RESI_M) == "factresapoyofamsumatotal"] <- "Apoyo_Familiar"
+ colnames(RESI_M)[colnames(RESI_M) == "factcuatroapoyosocsumt"] <- "Apoyo_Social"
+ colnames(RESI_M)[colnames(RESI_M) == "factcincoestructsumtotal"] <- "Cap_Organizacion"
+
  
  
 #guardar mis variables
