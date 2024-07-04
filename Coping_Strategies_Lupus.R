@@ -191,20 +191,62 @@ RESI_factors <-RESI_M %>% select(factunofcmsumatotal:factcincoestructsumtotal)
                       limits = c(0, 20)) +    # Ajustar los límites del eje Y   
    coord_flip()
          
- ### Multiple Radar Chart por grupos de edades ####
- 
- 
-   #Renombrar cada factor de RESI_M
- colnames(RESI_M)[colnames(RESI_M) == "Fort_Conf_SiMismo"] <- "factunofcmsumatotal"
- colnames(RESI_M)[colnames(RESI_M) == "Fort_Conf_SiMismo"] <- "factdoscompsumatotal"
- colnames(RESI_M)[colnames(RESI_M) == "Apoyo_Familiar"] <- "factresapoyofamsumatotal"
- colnames(RESI_M)[colnames(RESI_M) == "Apoyo_Social"] <- "factcuatroapoyosocsumt"
- colnames(RESI_M)[colnames(RESI_M) == "Cap_Organizacion"] <- "factcincoestructsumtotal"
- 
+ ### Multiple Radar Chart por grupos de edades #### (quedo pendiente hacer commit de estos cambios )
  
  #Convertir a factor la columna age_group    
  RESI_M$age_group <- factor(RESI_M$age_group)
+ 
+ #Agrupar por grupo de edad y calcular sus medias 
+ Media_Scores_by_AgeGroups_RESI <-RESI_M %>%
+   group_by(age_group) %>%
+   summarise(
+     Factor1 = round(mean(factunofcmsumatotal), 0),
+     Factor2 = round(mean(factdoscompsumatotal), 0),
+     Factor3 = round(mean(factresapoyofamsumatotal), 0),
+     Factor4 = round(mean(factcuatroapoyosocsumt), 0),
+     Factor5 = round(mean(factcincoestructsumtotal), 0)
+   )
+  #Seleccionar unicamente los resultados
+ Results_RESI_AgeGroups <- Media_Scores_by_AgeGroups_RESI %>% select(Factor1:Factor5)
+  #Calcular máximos y mínimos 
+ max_min_RESI_by_AgeGroups <- data.frame (
+   Factor1 = c(100, 0), Factor2 = c(100, 0), Factor3 = c(100, 0),
+   Factor4 = c(100, 0), Factor5 = c(100 ,0))
+ 
 
+ # Juntar los dos df anteriores en uno mismo para crear la radar chart 
+ df_Multiple_radar_RESI <- rbind(max_min_RESI_by_AgeGroups, Results_RESI_AgeGroups)
+ 
+ #Define fill colors 
+ colors_fill <- c (
+   scales::alpha("deepskyblue",0.1),
+   scales::alpha("gold",0.1),
+   scales::alpha("tomato",0.2),
+   scales::alpha("skyblue",0.2),
+   scales::alpha("forestgreen",0.2),
+   scales::alpha("orchid",0.2))
+ 
+ #Define line colors 
+ 
+ colors_line <- c(
+   scales::alpha("deepskyblue",0.9),
+   scales::alpha("gold",0.9),
+   scales::alpha("tomato",0.9),
+   scales::alpha("royalblue",0.9),
+   scales::alpha("forestgreen",0.9),
+   scales::alpha("orchid",0.9))
+ 
+
+radarchart(df_Multiple_radar_RESI,
+           axistype = 1,
+           seg = 5, #Número de segmentos 
+           title = "Puntuación de factores de resiliencia por edades",
+           pcol = colors_line,
+           pfcol = colors_fill, 
+           plwd = 4,
+           caxislabels = seq(0, 100, 20),
+           
+)
  
 
  
@@ -213,7 +255,9 @@ RESI_factors <-RESI_M %>% select(factunofcmsumatotal:factcincoestructsumtotal)
 #guardar mis variables
  
 save(CSI_Res_base, CSI, RESI_M, RESI_factors, media_de_RESI_factors,df_radar_RESI, df_radar_CSI, RESI_M_longer, CSI_longer, file = "data/variables_CIS_Res.RData")
+save(Media_Scores_by_AgeGroups_RESI, Results_RESI_AgeGroups, max_min_RESI_by_AgeGroups, df_Multiple_radar_RESI, file = "data/variables_RESI_Multiple_Radar_Chart.RData")
 write.csv(CSI_Res_base, file = "data/CSI_Res_base_filtered.csv", row.names = FALSE)
+
 
  
  
