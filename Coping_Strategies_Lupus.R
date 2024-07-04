@@ -191,7 +191,7 @@ RESI_factors <-RESI_M %>% select(factunofcmsumatotal:factcincoestructsumtotal)
                       limits = c(0, 20)) +    # Ajustar los límites del eje Y   
    coord_flip()
          
- ### Multiple Radar Chart por grupos de edades #### (quedo pendiente hacer commit de estos cambios )
+ ### Multiple Radar Chart por grupos de edades #### 
  
  #Convertir a factor la columna age_group    
  RESI_M$age_group <- factor(RESI_M$age_group)
@@ -247,15 +247,68 @@ radarchart(df_Multiple_radar_RESI,
            caxislabels = seq(0, 100, 20),
            
 )
- 
 
+# Gráfico de violín por edades 
+
+  #Convertir a factor la columna age_group del df RESI_M_longer para que sea capaz de calsificar por grupos de edades     
+  RESI_M_longer$age_group <- factor(RESI_M_longer$age_group)
+
+  # Gráfico de violin para los 6 grupos de edades ####
+  ggplot(RESI_M_longer, aes(x = Factores, y = Puntuacion, fill = Factores)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1, color = "black", outlier.shape = NA) +  # Agregar boxplots si deseas
+  scale_fill_hue() +  # escala de colores
+  theme_minimal() +  
+  labs(x = "Factores", y = "Puntuación", title = "Distribuciones de Factores Resiliencia") +
+  scale_y_continuous(breaks = seq(0, 80, by = 20),  # Ajustar los valores del eje y
+                     limits = c(0, 80)) + # Ajustar los límites del eje y
+  coord_flip() + #para invertir los ejes 
+  facet_wrap(~ age_group) # para separa las gráficas 
+
+  ### Multiple Radar Chart por género  #### 
+  
+  #Agrupar por grupo de edad y calcular sus medias 
+  Media_Scores_by_Gender_RESI <- RESI_M %>%
+    group_by(gender) %>%
+    summarise(
+      Factor1 = round(mean(factunofcmsumatotal), 0),
+      Factor2 = round(mean(factdoscompsumatotal), 0),
+      Factor3 = round(mean(factresapoyofamsumatotal), 0),
+      Factor4 = round(mean(factcuatroapoyosocsumt), 0),
+      Factor5 = round(mean(factcincoestructsumtotal), 0)
+    )
+  
+  #Seleccionar unicamente los resultados
+  Results_RESI_Gender <- Media_Scores_by_Gender_RESI %>% select(Factor1:Factor5) 
+  
+  #Calcular máximos y mínimos 
+  max_min_RESI_by_Gender <- data.frame (
+    Factor1 = c(100, 0), Factor2 = c(100, 0), Factor3 = c(100, 0),
+    Factor4 = c(100, 0), Factor5 = c(100 ,0))
  
+  # Juntar los dos df anteriores en uno mismo para crear la radar chart 
+  df_Multiple_radar_RESI_Bygender <- rbind(max_min_RESI_by_Gender, Results_RESI_Gender)
+  
+  # Plot radar chart 
+  radarchart(df_Multiple_radar_RESI_Bygender,
+             axistype = 1,
+             seg = 5, #Número de segmentos 
+             title = "Puntuación de factores de resiliencia por género",
+             pcol = colors_line,
+             pfcol = colors_fill, 
+             plwd = 4,
+             caxislabels = seq(0, 100, 20),
+              )
  
+#guardar  todas mis variables
  
-#guardar mis variables
- 
+# Variables iniciales para los primeros 4 gráficos (Gráficos de violin CSI & Resi/Spider Graph CSI & Resi)  
 save(CSI_Res_base, CSI, RESI_M, RESI_factors, media_de_RESI_factors,df_radar_RESI, df_radar_CSI, RESI_M_longer, CSI_longer, file = "data/variables_CIS_Res.RData")
+# Variables para Multiple Radar Chart por grupos de edades 
 save(Media_Scores_by_AgeGroups_RESI, Results_RESI_AgeGroups, max_min_RESI_by_AgeGroups, df_Multiple_radar_RESI, file = "data/variables_RESI_Multiple_Radar_Chart.RData")
+# Variables para Multiple Radar Chart por género 
+save(Media_Scores_by_Gender_RESI, Results_RESI_Gender, max_min_RESI_by_Gender, df_Multiple_radar_RESI_Bygender, file = "data/variables_RESI_Multiple_Radar_Chart_Gender.RData")
+# CSV de la data inical filtrada 
 write.csv(CSI_Res_base, file = "data/CSI_Res_base_filtered.csv", row.names = FALSE)
 
 
