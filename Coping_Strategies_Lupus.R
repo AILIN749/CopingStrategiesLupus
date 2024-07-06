@@ -248,12 +248,24 @@ radarchart(df_Multiple_radar_RESI,
            
 )
 
-# Gráfico de violín por edades 
+# Gráficos de violín para los 6 grupos de edades en resiliencia  (RESI_M) ####
 
-  #Convertir a factor la columna age_group del df RESI_M_longer para que sea capaz de calsificar por grupos de edades     
-  RESI_M_longer$age_group <- factor(RESI_M_longer$age_group)
+   #Convertir a factor la columna age_group del df RESI_M_longer para que sea capaz de clasificar por grupos de edades     
+   RESI_M_longer$age_group <- factor(RESI_M_longer$age_group)
+  
+   #Cambiar los nombres de la columna "Factores " al factor correspondiente del estudio 
+  
+   RESI_M_longer <- RESI_M_longer %>%
+    mutate( Factores = case_when(
+      Factores == "factunofcmsumatotal" ~ "Fortaleza y Confianza en sí mismo",
+      Factores == "factdoscompsumatotal" ~ "Competencia para relacionarse con los demás",
+      Factores == "factresapoyofamsumatotal" ~ "Apoyo Familiar",
+      Factores == "factcuatroapoyosocsumt" ~ "Apoyo Social",
+      Factores == "factcincoestructsumtotal" ~ "Capacidad de organización",
+      TRUE ~ Factores
+                 ))
 
-  # Gráfico de violin para los 6 grupos de edades ####
+  # Gráfico 
   ggplot(RESI_M_longer, aes(x = Factores, y = Puntuacion, fill = Factores)) +
   geom_violin() +
   geom_boxplot(width = 0.1, color = "black", outlier.shape = NA) +  # Agregar boxplots si deseas
@@ -261,10 +273,43 @@ radarchart(df_Multiple_radar_RESI,
   theme_minimal() +  
   labs(x = "Factores", y = "Puntuación", title = "Distribuciones de Factores Resiliencia") +
   scale_y_continuous(breaks = seq(0, 80, by = 20),  # Ajustar los valores del eje y
-                     limits = c(0, 80)) + # Ajustar los límites del eje y
+  limits = c(0, 80)) + # Ajustar los límites del eje y
   coord_flip() + #para invertir los ejes 
   facet_wrap(~ age_group) # para separa las gráficas 
+  
+  
+# Gráfico de violin para los 6 grupos de edades para afrontamiento (CSI) ####
 
+  
+  #Convertir a factor la columna age_group del df RESI_M_longer para que sea capaz de calsificar por grupos de edades     
+  CSI_longer$age_group <- factor(CSI_longer$age_group)
+  #Cambiar los nombres de la columna "Factores " al factor correspondiente del estudio 
+   CSI_longer <- CSI_longer %>%
+    mutate( Factores = case_when(
+      Factores == "sumaescalaafrorep" ~ "Resolución de problemas", 
+      Factores == "sumaescalaafroauc" ~ "Autrocrítica",
+      Factores == "sumaescalaafroeem" ~ "Expresión Emocional", 
+      Factores == "sumaescalaafropsd" ~ "Pensamiento de superación", 
+      Factores == "sumaescalaafroaps" ~ "Apoyo Social",
+      Factores == "sumaescalaafrorec" ~ " Reestructuración cognitiva", 
+      Factores == "sumaescalaafroevp" ~ "Evasión de problemas",  
+      Factores == "sumaescalaafrores" ~ "Aislamiento Social",
+      TRUE ~ Factores
+    ))
+   
+   # Gráfico 
+     ggplot(CSI_longer, aes(x = Factores, y = Puntuacion, fill = Factores)) +
+     geom_violin() +
+     geom_boxplot(width = 0.1, color = "black", outlier.shape = NA) +  # Agregar boxplots si deseas
+     scale_fill_hue() +  # escala de colores
+     theme_minimal() +  
+     labs(x = "Factores", y = "Puntuación", title = "Distribuciones de Factores Resiliencia") +
+     scale_y_continuous(breaks = seq(0, 80, by = 20),  # Ajustar los valores del eje y
+                        limits = c(0, 80)) + # Ajustar los límites del eje y
+     coord_flip() + #para invertir los ejes 
+     facet_wrap(~ age_group) # para separa las gráficas 
+
+     
   ### Multiple Radar Chart por género  #### 
   
   #Agrupar por grupo de edad y calcular sus medias 
