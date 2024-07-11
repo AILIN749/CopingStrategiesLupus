@@ -303,7 +303,7 @@ radarchart(df_Multiple_radar_RESI,
      geom_boxplot(width = 0.1, color = "black", outlier.shape = NA) +  # Agregar boxplots si deseas
      scale_fill_hue() +  # escala de colores
      theme_minimal() +  
-     labs(x = "Factores", y = "Puntuación", title = "Distribuciones de Factores Resiliencia") +
+     labs(x = "Factores", y = "Puntuación", title = "Distribuciones de Factores Afrontamiento") +
      scale_y_continuous(breaks = seq(0, 80, by = 20),  # Ajustar los valores del eje y
                         limits = c(0, 80)) + # Ajustar los límites del eje y
      coord_flip() + #para invertir los ejes 
